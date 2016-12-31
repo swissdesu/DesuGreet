@@ -7,7 +7,7 @@ here = path.abspath(path.dirname(__file__))
 setup(
     name='desugreet',
 
-    version='1.0.0',
+    version='1.1.0',
 
     description="a small discord-bot that greets new Members",
     long_description="a small discord-bot that greets new Members",

@@ -10,7 +10,8 @@ DesuGreet is a small discord bot. it assigns a role to new members and welcomes 
 {
     "token":"your_super_secret_bot_token",
     "role":"your cool member role",
-    "message":"Hi {0.mention}, welcome to {1.name}!"
+    "message":"Hi {0.mention}, welcome to {1.name}!",
+    "log": "your log-channel id here"
 }
 ```
 
