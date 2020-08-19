@@ -3,7 +3,7 @@ import desugreet.bot as bot
 import json
 
 def main():
-    home = os.path.expanduser('~')
+    home = os.path.expanduser('')
     config = os.path.join(home, ".desugreet")
 
     if os.path.isfile(config):
