@@ -12,10 +12,9 @@ setup(
     description="a small discord-bot that greets new Members",
     long_description="a small discord-bot that greets new Members",
 
-    url='https://github.com/AlexFence/DesuGreet',
+    url='https://github.com/swissdesu/DesuGreet',
 
-    author='Alex Fence',
-    author_email='alexfence.code@gmail.com',
+    author='swissdesu',
 
     license='GPL',
 
