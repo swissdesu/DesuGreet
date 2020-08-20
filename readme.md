@@ -2,7 +2,7 @@
 DesuGreet is a small discord bot. it assigns a role to new members and welcomes them on the server with a direct message.
 
 # Install
-1. `git clone https://github.com/AlexFence/DesuGreet`
+1. `git clone https://github.com/swissdesu/DesuGreet`
 2. `pip install ./DesuGreet`
 3. create a file with the name .desugreet in your home directory
 4. The content of the config file should look like this:

@@ -2,6 +2,7 @@ import os
 import desugreet.bot as bot
 import json
 
+
 def main():
     home = os.path.expanduser('')
     config = os.path.join(home, ".desugreet")
@@ -16,7 +17,7 @@ def main():
         bot.log_channel_id = data["log"]
         bot.run()
     else:
-        print("Please create the config file .desugreet in your home directory!")
+        print("Please create the config file .desugreet in the directory you are running the bot from!")
 
 
 if __name__ == "__main__":
