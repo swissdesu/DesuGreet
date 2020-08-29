@@ -14,7 +14,7 @@ def main():
         bot.token = data["token"]
         bot.role = data["role"]
         bot.welcome_msg = data["message"]
-        bot.log_channel_id = data["log"]
+        bot.log_channel_id = int(data["log"])
         bot.run()
     else:
         print("Please create the config file .desugreet in the directory you are running the bot from!")
