@@ -24,7 +24,7 @@ async def on_member_join(member):
 
 @client.event
 async def on_member_remove(member):
-    await client.get_channel(log_channel_id).send("{0.mention} has left".format(member))
+    await client.get_channel(log_channel_id).send("{0.name} has left".format(member))
 
 
 @client.event
