@@ -2,7 +2,10 @@ import discord
 import datetime
 from dateutil.relativedelta import relativedelta
 
-client = discord.Client()
+intents = discord.Intents.default()
+intents.members = True
+
+client = discord.Client(intents=intents)
 token = None
 role = None
 welcome_msg = None
