@@ -29,7 +29,7 @@ setup(
 
     packages=find_packages(),
 
-    install_requires=['discord.py', 'dateutils'],
+    install_requires=['discord.py>=1.5', 'dateutils'],
     entry_points={
       'console_scripts': [
           'desugreet = desugreet.__main__:main'
