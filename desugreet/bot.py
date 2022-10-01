@@ -36,7 +36,7 @@ async def on_member_update(member_before, member_after):
     server = member_after.guild
 
     # check for boost/de-boosting
-    boost_role = discord.utils.get(server.roles, name='Nitro Booster Test')
+    boost_role = discord.utils.get(server.roles, name='Nitro Booster')
     member_before_boost = boost_role in member_before.roles
     member_after_boost = boost_role in member_after.roles
 
