@@ -27,9 +27,9 @@ async def on_member_join(member):
     try:
         await member.send(welcome_msg.format(member, server))
     except discord.errors.Forbidden:
-        await client.get_channel(log_channel_id).send("{0.mention} (closed DM) has joined".format(member))
+        await client.get_channel(log_channel_id).send("{0.mention} (closed DM) isch cho".format(member))
     else:
-        await client.get_channel(log_channel_id).send("{0.mention} has joined".format(member))
+        await client.get_channel(log_channel_id).send("{0.mention} isch cho".format(member))
 
 @client.event
 async def on_member_update(member_before, member_after):
@@ -49,7 +49,7 @@ async def on_member_update(member_before, member_after):
 
 @client.event
 async def on_member_remove(member):
-    await client.get_channel(log_channel_id).send("{0.name}#{0.discriminator} has left".format(member))
+    await client.get_channel(log_channel_id).send("{0.name}#{0.discriminator} isch gange".format(member))
 
 
 @client.event
