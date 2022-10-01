@@ -31,6 +31,21 @@ async def on_member_join(member):
     else:
         await client.get_channel(log_channel_id).send("{0.mention} has joined".format(member))
 
+@client.event
+async def on_member_update(member_before, member_after):
+    server = member_after.guild
+
+    # check for boost/de-boosting
+    boost_role = discord.utils.get(server.roles, name='Nitro Booster Test')
+    member_before_boost = boost_role in member_before.roles
+    member_after_boost = boost_role in member_after.roles
+
+    if member_after_boost and not member_before_boost:
+        reaction_emoji = discord.utils.get(server.emojis, name='cirnoSmile')
+        await client.get_channel(log_channel_id).send("{0.mention} het de Server boosted. Danke! {1}".format(member_after, reaction_emoji))
+    if member_before_boost and not member_after_boost:
+        reaction_emoji = discord.utils.get(server.emojis, name='saddest')
+        await client.get_channel(log_channel_id).send("{0.mention} het ufghört de Server zbooste. {1}".format(member_after, reaction_emoji))
 
 @client.event
 async def on_member_remove(member):
