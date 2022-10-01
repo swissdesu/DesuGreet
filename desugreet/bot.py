@@ -22,8 +22,14 @@ async def on_member_join(member):
         await member.add_roles(member_role)
     else:
         print("check your config file, the role does not exist!")
-    await member.send(welcome_msg.format(member, server))
-    await client.get_channel(log_channel_id).send("{0.mention} has joined".format(member))
+    
+    # detect when member does not accept DM
+    try:
+        await member.send(welcome_msg.format(member, server))
+    except discord.errors.Forbidden:
+        await client.get_channel(log_channel_id).send("{0.mention} (closed DM) has joined".format(member))
+    else:
+        await client.get_channel(log_channel_id).send("{0.mention} has joined".format(member))
 
 
 @client.event
