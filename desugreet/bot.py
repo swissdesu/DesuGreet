@@ -16,6 +16,8 @@ entrance_channel_id = None
 entrance_msg = None
 start_time = datetime.datetime.now()
 
+entrance_track_buffer = {}
+
 @client.event
 async def on_member_join(member):
     server = member.guild
@@ -25,8 +27,10 @@ async def on_member_join(member):
     else:
         print("check your config file, the role does not exist!")
 
-    await client.get_channel(entrance_channel_id).send(entrance_msg.format(member))
+    entrance_track_buffer[member] = []  # create list buffer with a member obj key
+    entrance_track_buffer[member].append(await client.get_channel(entrance_channel_id).send(entrance_msg.format(member)))
 
+None
 @client.event
 async def on_member_update(member_before, member_after):
     server = member_after.guild
@@ -50,6 +54,10 @@ async def on_member_update(member_before, member_after):
             await client.get_channel(log_channel_id).send("{0.mention} (closed DM) isch cho".format(member_after))
         else:
             await client.get_channel(log_channel_id).send("{0.mention} isch cho".format(member_after))
+        # clean messages in entrance_track_buffer
+        if member_after in entrance_track_buffer.keys():
+            for msg in entrance_track_buffer[member_after]:
+                await msg.delete()
 
     ## check for boost/de-boosting transition
     boost_role = discord.utils.get(server.roles, name='Nitro Booster')
@@ -81,6 +89,11 @@ async def on_message(message):
     if message.author == client.user:
         return
 
+    entrance_channel = client.get_channel(entrance_channel_id)
+    if message.channel is entrance_channel:
+        if message.author in entrance_track_buffer.keys():
+            entrance_track_buffer[message.author].append(message)
+
     if message.content.startswith('!dginfo'):
         now = datetime.datetime.now()
         diff = relativedelta(now, start_time)
@@ -89,7 +102,7 @@ async def on_message(message):
         text = text.format(diff)
         await message.channel.send(text)
     elif message.content.startswith('!clear-entrance'):
-        entrance_channel = client.get_channel(entrance_channel_id)
+        # TODO: only mods shall be able to run this command
         async for message in entrance_channel.history(limit=None):
             await message.delete()
 
