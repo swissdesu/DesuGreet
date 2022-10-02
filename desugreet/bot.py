@@ -88,6 +88,10 @@ async def on_message(message):
         text += '\nsource: https://github.com/swissdesu/DesuGreet'
         text = text.format(diff)
         await message.channel.send(text)
+    elif message.content.startswith('!clear-entrance'):
+        entrance_channel = client.get_channel(entrance_channel_id)
+        async for message in entrance_channel.history(limit=None):
+            await message.delete()
 
 
 @client.event
