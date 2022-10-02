@@ -86,6 +86,8 @@ async def on_member_remove(member):
 
 @client.event
 async def on_message(message):
+    global entrance_track_buffer
+
     if message.author == client.user:
         return
 
@@ -103,8 +105,11 @@ async def on_message(message):
         await message.channel.send(text)
     elif message.content.startswith('!clear-entrance'):
         if message.author.guild_permissions.manage_messages:
+            # remove all messages in entrance channel
             async for message in entrance_channel.history(limit=None):
                 await message.delete()
+            # clear out entrance message buffer
+            entrance_track_buffer = {}
         else:
             await message.reply("{0.mention} du häsch ke Berechtigung für de Command".format(message.author))
 
