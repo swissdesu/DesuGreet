@@ -8,48 +8,72 @@ intents.message_content = True
 
 client = discord.Client(intents=intents)
 token = None
-role = None
+member_role_str = None
 welcome_msg = None
 log_channel_id = None
+entrance_role_str = None
+entrance_channel_id = None
+entrance_msg = None
 start_time = datetime.datetime.now()
-
 
 @client.event
 async def on_member_join(member):
     server = member.guild
-    member_role = __getRole(server.roles, role)
-    if member_role is not None:
-        await member.add_roles(member_role)
+    entrance_role = discord.utils.get(server.roles, name=entrance_role_str)
+    if entrance_role is not None:
+        await member.add_roles(entrance_role)
     else:
         print("check your config file, the role does not exist!")
-    
-    # detect when member does not accept DM
-    try:
-        await member.send(welcome_msg.format(member, server))
-    except discord.errors.Forbidden:
-        await client.get_channel(log_channel_id).send("{0.mention} (closed DM) isch cho".format(member))
-    else:
-        await client.get_channel(log_channel_id).send("{0.mention} isch cho".format(member))
+
+    await client.get_channel(entrance_channel_id).send(entrance_msg.format(member))
 
 @client.event
 async def on_member_update(member_before, member_after):
     server = member_after.guild
 
-    # check for boost/de-boosting
+    ## check for entrance-role transition
+    entrance_role = discord.utils.get(server.roles, name=entrance_role_str)
+    member_before_entrance = entrance_role in member_before.roles
+    member_after_entrance = entrance_role in member_after.roles
+    # add user to member when the entrance-role is removed
+    if member_before_entrance and not member_after_entrance:
+        # entrance role was removed
+        member_role = discord.utils.get(server.roles, name=member_role_str)
+        if member_role is not None:
+            await member_after.add_roles(member_role)
+        else:
+            print("check your config file, the role does not exist!")
+        # detect when member does not accept DM
+        try:
+            await member_after.send(welcome_msg.format(member_after, server))
+        except discord.errors.Forbidden:
+            await client.get_channel(log_channel_id).send("{0.mention} (closed DM) isch cho".format(member_after))
+        else:
+            await client.get_channel(log_channel_id).send("{0.mention} isch cho".format(member_after))
+
+    ## check for boost/de-boosting transition
     boost_role = discord.utils.get(server.roles, name='Nitro Booster')
     member_before_boost = boost_role in member_before.roles
     member_after_boost = boost_role in member_after.roles
 
     if member_after_boost and not member_before_boost:
+        # booster role was added
         reaction_emoji = discord.utils.get(server.emojis, name='cirnoSmile')
         await client.get_channel(log_channel_id).send("{0.mention} het de Server boosted. Danke! {1}".format(member_after, reaction_emoji))
     if member_before_boost and not member_after_boost:
+        # booster role was removed
         reaction_emoji = discord.utils.get(server.emojis, name='saddest')
         await client.get_channel(log_channel_id).send("{0.mention} het ufghört de Server zbooste. {1}".format(member_after, reaction_emoji))
 
 @client.event
 async def on_member_remove(member):
-    await client.get_channel(log_channel_id).send("{0.name}#{0.discriminator} isch gange".format(member))
+    # suppress the log when the member is of entrance-role
+    server = member.guild
+    entrance_role = entrance_role = discord.utils.get(server.roles, name=entrance_role_str)
+    if entrance_role in member.roles:
+        await client.get_channel(entrance_channel_id).send("{0.name}#{0.discriminator} isch wieder gange".format(member))
+    else:
+        await client.get_channel(log_channel_id).send("{0.name}#{0.discriminator} isch gange".format(member))
 
 
 @client.event
@@ -73,15 +97,13 @@ async def on_ready():
     print(client.user.id)
     print('------')
 
-
-def __getRole(roles, role_name):
-    for r in roles:
-        if r.name == role_name:
-            return r
-
-    return None
-
-
 def run():
-    if token is not None and role is not None and welcome_msg is not None:
+    if (token is not None 
+    and member_role_str is not None 
+    and welcome_msg is not None
+    and entrance_role_str is not None
+    and entrance_channel_id is not None
+    and entrance_msg is not None):
         client.run(token)
+    else:
+        print("Error: Some configuration are missing in the json config file")
