@@ -57,6 +57,7 @@ async def on_member_update(member_before, member_after):
         if member_after in entrance_track_buffer.keys():
             for msg in entrance_track_buffer[member_after]:
                 await msg.delete()
+            del entrance_track_buffer[member_after]
 
     ## check for boost/de-boosting transition
     boost_role = discord.utils.get(server.roles, name='Nitro Booster')
