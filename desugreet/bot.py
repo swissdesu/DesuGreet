@@ -30,7 +30,6 @@ async def on_member_join(member):
     entrance_track_buffer[member] = []  # create list buffer with a member obj key
     entrance_track_buffer[member].append(await client.get_channel(entrance_channel_id).send(entrance_msg.format(member)))
 
-None
 @client.event
 async def on_member_update(member_before, member_after):
     server = member_after.guild
