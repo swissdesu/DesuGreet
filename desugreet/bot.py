@@ -102,9 +102,11 @@ async def on_message(message):
         text = text.format(diff)
         await message.channel.send(text)
     elif message.content.startswith('!clear-entrance'):
-        # TODO: only mods shall be able to run this command
-        async for message in entrance_channel.history(limit=None):
-            await message.delete()
+        if message.author.guild_permissions.manage_messages:
+            async for message in entrance_channel.history(limit=None):
+                await message.delete()
+        else:
+            await message.reply("{0.mention} du häsch ke Berechtigung für de Command".format(message.author))
 
 
 @client.event
