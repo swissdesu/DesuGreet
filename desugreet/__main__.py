@@ -12,9 +12,12 @@ def main():
             data = json.load(data_file)
 
         bot.token = data["token"]
-        bot.role = data["role"]
-        bot.welcome_msg = data["message"]
-        bot.log_channel_id = int(data["log"])
+        bot.member_role_str = data["member-role"]
+        bot.welcome_msg = data["welcome-message"]
+        bot.log_channel_id = int(data["log-channel-id"])
+        bot.entrance_role_str = data["entrance-role"]
+        bot.entrance_channel_id = int(data["entrance-channel-id"])
+        bot.entrance_msg = data["entrance-message"]
         bot.run()
     else:
         print("Please create the config file .desugreet in the directory you are running the bot from!")
