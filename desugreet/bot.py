@@ -53,10 +53,14 @@ async def on_member_update(member_before, member_after):
             await client.get_channel(log_channel_id).send("{0.mention} (closed DM) isch cho".format(member_after))
         else:
             await client.get_channel(log_channel_id).send("{0.mention} isch cho".format(member_after))
-        # clean messages in entrance_track_buffer
+        # delete messages in entrance_track_buffer
         if member_after in entrance_track_buffer.keys():
             for msg in entrance_track_buffer[member_after]:
-                await msg.delete()
+                try:
+                    await msg.delete()
+                except discord.errors.NotFound:
+                    pass
+
             del entrance_track_buffer[member_after]
 
     ## check for boost/de-boosting transition
@@ -105,7 +109,7 @@ async def on_message(message):
         await message.channel.send(text)
     elif message.content.startswith('!clear-entrance'):
         if message.author.guild_permissions.manage_messages:
-            # remove all messages in entrance channel
+            # delete all messages in entrance channel
             async for message in entrance_channel.history(limit=None):
                 await message.delete()
             # clear out entrance message buffer
