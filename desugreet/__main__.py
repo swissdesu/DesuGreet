@@ -1,23 +1,20 @@
 import os
-import desugreet.bot as bot
-import json
+import discord
+from desugreet.bot import DesuGreetBot
+from desugreet.config import JsonConfig
 
 
 def main():
     home = os.path.expanduser('')
-    config = os.path.join(home, ".desugreet")
+    configPath = os.path.join(home, ".desugreet")
 
-    if os.path.isfile(config):
-        with open(config) as data_file:
-            data = json.load(data_file)
+    if os.path.isfile(configPath):
+        intents = discord.Intents.default()
+        intents.members = True
+        intents.message_content = True
 
-        bot.token = data["token"]
-        bot.member_role_str = data["member-role"]
-        bot.welcome_msg = data["welcome-message"]
-        bot.log_channel_id = int(data["log-channel-id"])
-        bot.entrance_role_str = data["entrance-role"]
-        bot.entrance_channel_id = int(data["entrance-channel-id"])
-        bot.entrance_msg = data["entrance-message"]
+        jsonConfig = JsonConfig(configPath)
+        bot = DesuGreetBot(jsonConfig)
         bot.run()
     else:
         print("Please create the config file .desugreet in the directory you are running the bot from!")
