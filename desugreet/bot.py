@@ -24,8 +24,8 @@ class DesuGreetBot(discord.Client):
 
 
     async def on_member_join(self, member):
-        entranceMsg = self.config.entrance_msg.format(member)
-        self.entranceHandler.create_new_entrance_person(member, 
+        entranceMsg = self.jsonConfig.entrance_msg.format(member)
+        await self.entranceHandler.create_new_entrance_person(member, 
                                                         self.objConfig.entranceRole, 
                                                         self.objConfig.entranceChannel, 
                                                         entranceMsg)
@@ -36,18 +36,18 @@ class DesuGreetBot(discord.Client):
         memberComparator = SameMemberComparator(member_before, member_after)
 
         ## check for entrance-role transition
-        entranceRole = discord.utils.get(guild.roles, name=self.config.entrance_role_str)
+        entranceRole = discord.utils.get(guild.roles, name=self.jsonConfig.entrance_role_str)
         if memberComparator.roleWasRemoved(entranceRole):
             # entrance role was removed
-            welcomeMsg = self.config.welcome_msg.format(member_after, member_after.guild)
-            self.entranceHandler.add_member(member_after, self.objConfig.memberRole, welcomeMsg, self.objConfig.logChannel)
-            self.entranceHandler.delete_member_history()
+            welcomeMsg = self.jsonConfig.welcome_msg.format(member_after, member_after.guild)
+            await self.entranceHandler.add_member(member_after, self.objConfig.memberRole, welcomeMsg, self.objConfig.logChannel)
+            await self.entranceHandler.delete_member_history(member_after)
 
         ## check for boost/de-boosting transition
         if memberComparator.roleWasAdded(self.objConfig.boostRole):
             reaction_emoji = discord.utils.get(guild.emojis, name='cirnoSmile')
             await self.objConfig.logChannel.send("{0.mention} het de guild boosted. Danke! {1}".format(member_after, reaction_emoji))
-        if memberComparator.roleWasRemoved:
+        if memberComparator.roleWasRemoved(self.objConfig.boostRole):
             reaction_emoji = discord.utils.get(guild.emojis, name='saddest')
             await self.objConfig.logChannel.send("{0.mention} het ufghört de guild zbooste. {1}".format(member_after, reaction_emoji))
 
@@ -64,7 +64,7 @@ class DesuGreetBot(discord.Client):
         if message.author == self.user:
             return
 
-        if message.channel is self.entranceChannel:
+        if message.channel is self.objConfig.entranceChannel:
             self.entranceHandler.add_message(message)
 
         if message.content.startswith('!dginfo'):
@@ -75,7 +75,7 @@ class DesuGreetBot(discord.Client):
             text = text.format(diff)
             await message.channel.send(text)
         elif message.content.startswith('!clear-entrance'):
-            self.entranceHandler.delete_all_history(message, self.entranceChannel)
+            await self.entranceHandler.delete_all_history(message, self.objConfig.entranceChannel)
 
 
     async def on_ready(self):
@@ -92,6 +92,6 @@ class DesuGreetBot(discord.Client):
         and self.jsonConfig.entrance_role_str is not None
         and self.jsonConfig.entrance_channel_id is not None
         and self.jsonConfig.entrance_msg is not None):
-            self.run(self.jsonConfig.token)
+            super().run(self.jsonConfig.token)
         else:
             print("Error: Some configuration are missing in the json config file")

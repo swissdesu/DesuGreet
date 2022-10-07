@@ -14,7 +14,7 @@ def main():
         intents.message_content = True
 
         jsonConfig = JsonConfig(configPath)
-        bot = DesuGreetBot(jsonConfig)
+        bot = DesuGreetBot(jsonConfig, intents)
         bot.run()
     else:
         print("Please create the config file .desugreet in the directory you are running the bot from!")

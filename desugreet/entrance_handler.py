@@ -1,9 +1,8 @@
 import discord
 
 class EntranceHandler:
-    def __init__(self, client) -> None:
+    def __init__(self) -> None:
         self.entrance_track_buffer = {}
-        self.client = client
 
 
     async def create_new_entrance_person(self, member, entranceRole, entranceChannel, entranceMsg):
@@ -33,7 +32,7 @@ class EntranceHandler:
             await logChannel.send("{0.mention} isch cho".format(member))
 
 
-    async def add_message(self, message):
+    def add_message(self, message):
         if message.author in self.entrance_track_buffer.keys():
             self.entrance_track_buffer[message.author].append(message)
 
