@@ -1,5 +1,5 @@
 from desugreet.entrance_handler import EntranceHandler
-from desugreet.same_member_comparator import SameMemberComparator
+from desugreet.member_comparator import SameMemberComparator
 from desugreet.config import ObjConfig
 import discord
 import datetime
