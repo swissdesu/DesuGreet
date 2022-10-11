@@ -1,5 +1,5 @@
+from desugreet import member_comparator 
 from desugreet.entrance_handler import EntranceHandler
-from desugreet.member_comparator import SameMemberComparator
 from desugreet.config import ObjConfig
 import discord
 import datetime
@@ -31,24 +31,23 @@ class DesuGreetBot(discord.Client):
                                                         entranceMsg)
 
 
-    async def on_member_update(self, member_before, member_after):
-        guild = member_after.guild
-        memberComparator = SameMemberComparator(member_before, member_after)
+    async def on_member_update(self, memberBefore, memberAfter):
+        guild = memberAfter.guild
 
         ## check for entrance-role transition
-        if memberComparator.roleWasRemoved(self.objConfig.entranceRole):
+        if member_comparator.role_was_removed(memberBefore, memberAfter, self.objConfig.entranceRole):
             # entrance role was removed
-            welcomeMsg = self.jsonConfig.welcome_msg.format(member_after, member_after.guild)
-            await self.entranceHandler.add_member(member_after, self.objConfig.memberRole, welcomeMsg, self.objConfig.logChannel)
-            await self.entranceHandler.delete_member_history(member_after)
+            welcomeMsg = self.jsonConfig.welcome_msg.format(memberAfter, memberAfter.guild)
+            await self.entranceHandler.add_member(memberAfter, self.objConfig.memberRole, welcomeMsg, self.objConfig.logChannel)
+            await self.entranceHandler.delete_member_history(memberAfter)
 
         ## check for boost/de-boosting transition
-        if memberComparator.roleWasAdded(self.objConfig.boostRole):
+        if member_comparator.role_was_added(memberBefore, memberAfter, self.objConfig.boostRole):
             reaction_emoji = discord.utils.get(guild.emojis, name='cirnoSmile')
-            await self.objConfig.logChannel.send("{0.mention} het de guild boosted. Danke! {1}".format(member_after, reaction_emoji))
-        if memberComparator.roleWasRemoved(self.objConfig.boostRole):
+            await self.objConfig.logChannel.send("{0.mention} het de guild boosted. Danke! {1}".format(memberAfter, reaction_emoji))
+        if member_comparator.role_was_removed(memberBefore, memberAfter, self.objConfig.boostRole):
             reaction_emoji = discord.utils.get(guild.emojis, name='saddest')
-            await self.objConfig.logChannel.send("{0.mention} het ufghört de guild zbooste. {1}".format(member_after, reaction_emoji))
+            await self.objConfig.logChannel.send("{0.mention} het ufghört de guild zbooste. {1}".format(memberAfter, reaction_emoji))
 
 
     async def on_member_remove(self, member):

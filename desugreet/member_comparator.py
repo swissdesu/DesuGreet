@@ -1,16 +1,13 @@
-class SameMemberComparator:
-    def __init__(self, memberBefore, memberAfter) -> None:
-        self.memberBefore = memberBefore
-        self.memberAfter = memberAfter
+def role_was_added(memberBefore, memberAfter, role):
+    """ checks wheter a specified role was added to the given member """
+    memberBeforeEntrance = role in memberBefore.roles
+    memberAfterEntrance = role in memberAfter.roles
 
-    def roleWasAdded(self, role):
-        memberBeforeEntrance = role in self.memberBefore.roles
-        memberAfterEntrance = role in self.memberAfter.roles
+    return not memberBeforeEntrance and memberAfterEntrance
 
-        return not memberBeforeEntrance and memberAfterEntrance
+def role_was_removed(memberBefore, memberAfter, role):
+    """ checks wheter a specified role was removed from the given member """
+    memberBeforeEntrance = role in memberBefore.roles
+    memberAfterEntrance = role in memberAfter.roles
 
-    def roleWasRemoved(self, role):
-        memberBeforeEntrance = role in self.memberBefore.roles
-        memberAfterEntrance = role in self.memberAfter.roles
-
-        return memberBeforeEntrance and not memberAfterEntrance
+    return memberBeforeEntrance and not memberAfterEntrance
