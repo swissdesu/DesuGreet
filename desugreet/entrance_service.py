@@ -1,6 +1,6 @@
 import discord
 
-class EntranceHandler:
+class EntranceService:
     def __init__(self) -> None:
         self.entrance_track_buffer = {}
 

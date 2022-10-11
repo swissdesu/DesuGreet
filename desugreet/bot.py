@@ -1,5 +1,5 @@
 from desugreet import member_comparator 
-from desugreet.entrance_handler import EntranceHandler
+from desugreet.entrance_service import EntranceService
 from desugreet.config import ObjConfig
 import discord
 import datetime
@@ -12,7 +12,7 @@ class DesuGreetBot(discord.Client):
                  intents) -> None:
         self.jsonConfig = jsonConfig
         self.startTime = datetime.datetime.now()
-        self.entranceHandler = EntranceHandler()
+        self.entranceService = EntranceService()
         # run __setup method to initialize config with objects
         self.objConfig = None
         super().__init__(intents=intents)
@@ -25,7 +25,7 @@ class DesuGreetBot(discord.Client):
 
     async def on_member_join(self, member):
         entranceMsg = self.jsonConfig.entrance_msg.format(member)
-        await self.entranceHandler.create_new_entrance_person(member, 
+        await self.entranceService.create_new_entrance_person(member, 
                                                         self.objConfig.entranceRole, 
                                                         self.objConfig.entranceChannel, 
                                                         entranceMsg)
@@ -38,8 +38,8 @@ class DesuGreetBot(discord.Client):
         if member_comparator.role_was_removed(memberBefore, memberAfter, self.objConfig.entranceRole):
             # entrance role was removed
             welcomeMsg = self.jsonConfig.welcome_msg.format(memberAfter, memberAfter.guild)
-            await self.entranceHandler.add_member(memberAfter, self.objConfig.memberRole, welcomeMsg, self.objConfig.logChannel)
-            await self.entranceHandler.delete_member_history(memberAfter)
+            await self.entranceService.add_member(memberAfter, self.objConfig.memberRole, welcomeMsg, self.objConfig.logChannel)
+            await self.entranceService.delete_member_history(memberAfter)
 
         ## check for boost/de-boosting transition
         if member_comparator.role_was_added(memberBefore, memberAfter, self.objConfig.boostRole):
@@ -63,7 +63,7 @@ class DesuGreetBot(discord.Client):
             return
 
         if message.channel is self.objConfig.entranceChannel:
-            self.entranceHandler.add_message(message)
+            self.entranceService.add_message(message)
 
         if message.content.startswith('!dginfo'):
             now = datetime.datetime.now()
@@ -73,7 +73,7 @@ class DesuGreetBot(discord.Client):
             text = text.format(diff)
             await message.channel.send(text)
         elif message.content.startswith('!clear-entrance'):
-            await self.entranceHandler.delete_all_history(message, self.objConfig.entranceChannel)
+            await self.entranceService.delete_all_history(message, self.objConfig.entranceChannel)
 
 
     async def on_ready(self):
