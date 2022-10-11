@@ -36,8 +36,7 @@ class DesuGreetBot(discord.Client):
         memberComparator = SameMemberComparator(member_before, member_after)
 
         ## check for entrance-role transition
-        entranceRole = discord.utils.get(guild.roles, name=self.jsonConfig.entrance_role_str)
-        if memberComparator.roleWasRemoved(entranceRole):
+        if memberComparator.roleWasRemoved(self.objConfig.entranceRole):
             # entrance role was removed
             welcomeMsg = self.jsonConfig.welcome_msg.format(member_after, member_after.guild)
             await self.entranceHandler.add_member(member_after, self.objConfig.memberRole, welcomeMsg, self.objConfig.logChannel)
